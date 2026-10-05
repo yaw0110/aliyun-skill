@@ -5,7 +5,8 @@
 
 ## 权限总览
 
-当前用户有：**项目空间、节点(Node)、任务/工作流/实例、函数、资源、参数、数据集成(DI)、权限申请/审批**
+当前 skill 使用：**项目空间、节点(Node)、权限申请/审批**
+当前 skill 不包含：**任务/工作流/实例运维、数据集成、函数/资源/参数管理**
 当前用户无：**文件(File)、目录(Folder)、业务流程(Business)、数据源(DataSource)、数据地图/元数据**
 
 | 模块 | 权限状态 | 需要的 RAM 策略 |
@@ -17,8 +18,6 @@
 | 函数/资源/参数 | ✅ | dataworks 基础 |
 | 数据源 DataSource | ❌ | 需 dataworks:ListDataSources |
 | 数据地图/元数据 | ❌ | 需 `AliyunDataWorksFullAccess` + 数据地图权限 |
-| 任务/工作流/实例 | ✅ | dataworks 运维权限 |
-| 数据集成 DI | ✅ | dataworks:ListDIJobs 等 |
 | 权限申请/审批 | ✅ | dataworks 表权限申请与审批 |
 
 ---
@@ -81,21 +80,7 @@
 | `GetDataSource` / `CreateDataSource` / `UpdateDataSource` / `DeleteDataSource` | 数据源 CRUD | ❌（推测） |
 | `TestDataSourceConnectivity` | 测试连通性 | ❌（推测） |
 
-## 7. 任务 / 工作流 / 实例（运维）
-
-| API | 能力 | 权限 |
-|-----|------|------|
-| `ListTasks` | 查任务列表 | ✅ |
-| `GetTask` | 查任务详情 | ✅ |
-| `ListWorkflowDefinitions` | 查工作流定义 | ✅ |
-| `GetWorkflowDefinition` | 查工作流定义详情 | ✅ |
-| `ListWorkflowInstances` | 查工作流实例 | ✅ |
-| `ListTaskInstances` | 查任务实例（Bizdate 默认 `${workspace.lastday}`） | ✅ |
-| `GetWorkflow` / `GetWorkflowInstance` | 查工作流/实例详情 | ✅ |
-| `GetTaskInstance` | 查任务实例详情 | ✅ |
-| 实例操作：`RerunTaskInstances` / `StopTaskInstances` / `SetSuccessTaskInstances` | 重跑/停止/置成功 | ⚠️ 需真实实例 ID 确认 |
-
-## 8. 数据集成 DI
+## 7. 数据集成 DI
 
 | API | 能力 | 权限 |
 |-----|------|------|
@@ -104,7 +89,7 @@
 | `CreateDIJob` / `UpdateDIJob` / `DeleteDIJob` | DI 任务 CRUD | ❓ 未测 |
 | `StartDIJob` / `StopDIJob` / `GetDIJobLog` | 启停/日志 | ❓ 未测 |
 
-## 9. 数据地图 / 元数据（Data Map）
+## 8. 数据地图 / 元数据（Data Map）
 
 | API | 能力 | 权限 |
 |-----|------|------|
@@ -116,7 +101,7 @@
 
 > 数据地图 API 需 `AliyunDataWorksFullAccess` + 专门的数据地图权限。
 
-## 10. 权限申请 / 审批
+## 9. 权限申请 / 审批
 
 | API | 能力 | 权限 |
 |-----|------|------|
@@ -143,23 +128,4 @@
 
 - 「❓未测」= 未实际验证，权限状态待确认（多数与同组 API 一致）。
 - 权限申请/审批类 API：`--DefSchema MaxCompute` + `--ResourceType '["table"]'`（JSON 数组字符串），`--PageSize` 实测上限 **50**。
-- `Bizdate`（任务实例）参数为**时间戳毫秒**，非日期字符串。**默认值用 `${workspace.lastday}`（业务日期前一天）**，见下方「bizdate 默认 lastday」。
-- 敏感操作（Delete*、Stop*、Rerun*）执行前需人工确认。
-
-## bizdate 默认 lastday
-
-查询任务/工作流实例时，`Bizdate` 默认用 **`${workspace.lastday}`**（DataWorks 调度参数 = 业务日期前一天，即昨天）。
-
-CLI 手动调用时，把 `${workspace.lastday}` 换算为**昨天 00:00 的毫秒时间戳**传给 `--Bizdate`：
-
-```bash
-# lastday = 昨天（macOS/Linux）
-LAST_DAY=$(date -j -v-1d "+%Y-%m-%d" 2>/dev/null || date -d "yesterday" "+%Y-%m-%d")
-BIZDATE_MS=$(($(date -j -f "%Y-%m-%d" "$LAST_DAY" "+%s" 2>/dev/null || date -d "$LAST_DAY" "+%s")*1000))
-
-# 查 lastday（昨天）的任务实例
-# 默认查 lastday，如需指定其它业务日期自行替换 BIZDATE_MS
-aliyun dataworks-public ListTaskInstances --ProjectId 672230 --Bizdate $BIZDATE_MS --PageNumber 1 --PageSize 10
-```
-
-> 说明：`${workspace.lastday}` 是调度系统内置参数，在节点运行时自动求值；CLI 手动查询时需自行换算成毫秒时间戳。默认即查昨天的实例。
+- 敏感审批或撤回操作执行前需人工确认。
