@@ -13,7 +13,7 @@
 ```
 aliyun-skill/
 ├── README.md
-└── skills/                       # 领域 skill（按 DataWorks 控制台模块分布）
+└── .agents/skills/             # 领域 skill（按 DataWorks 控制台模块分布，git 追踪的源）
     ├── install/                  # 安装：装/升/验证 CLI、配凭证、环境变量
     │   ├── SKILL.md
     │   ├── references/install.md
@@ -21,17 +21,22 @@ aliyun-skill/
     ├── datastudio/               # DataStudio：数据开发
     │   ├── SKILL.md
     │   └── references/dataworks-public.md
+    ├── etl-migration/            # 新旧 ETL SQL 迁移（Hive→ODPS，命名/任务头/分区规范）
+    │   ├── SKILL.md
+    │   └── references/dev-standards.md
     ├── data-integration/         # 数据集成：数据源、同步任务（占位）
     ├── operation-center/         # 运维中心：实例、补数据、监控（占位）
     ├── deploy/                   # 发布：部署、上下线（占位）
     └── datamap/                  # 数据地图：元数据、血缘（占位）
+
+本地开发：`.pi/skills/*` 为指向 `.agents/skills/*` 的本地 symlink（不入库），各人自建。
 ```
 
 ## 快速开始
 
 ```bash
 # 1. 安装 aliyun-cli 到 ~/.local/bin
-cd skills/install && ./scripts/install.sh
+cd .agents/skills/install && ./scripts/install.sh
 # Windows: powershell -ExecutionPolicy Bypass -File scripts\install.ps1
 
 # 2. 验证（全局可用）

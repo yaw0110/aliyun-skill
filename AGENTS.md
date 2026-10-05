@@ -14,6 +14,7 @@
 | 发布部署（上线/下线） | `.pi/skills/deploy/SKILL.md` |
 | 数据地图（元数据、血缘、表检索） | `.pi/skills/datamap/SKILL.md` |
 | 安装/配置 aliyun-cli | `.pi/skills/install/SKILL.md` |
+| 新旧 ETL SQL 迁移（Hive→ODPS，含命名/任务头/分区规范） | `.pi/skills/etl-migration/SKILL.md` |
 
 要点：
 - 默认项目空间 `bdprd`（ProjectId=672230），region `cn-hangzhou`，凭证已配好（全局 `aliyun` 直接可用）。
