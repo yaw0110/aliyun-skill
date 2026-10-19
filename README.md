@@ -13,6 +13,13 @@
 ```
 aliyun-skill/
 ├── README.md
+├── prompt_单表离线同步.md       # 单表离线同步（MySQL/SQLServer→MaxCompute）操作手册
+├── di_scripts/                 # DI 排查脚本集（见其 README.md）
+│   ├── README.md
+│   ├── DI失败清单.sh            # 指定业务日失败实例：分类+告警+任务配置
+│   ├── DI排查清单.sh            # 全量 DI 任务 → CSV
+│   ├── DI表清单.sh              # 任务→表映射 Markdown
+│   └── DI求ODS_表.sh            # 仅 ods_* 目标表
 └── .agents/skills/             # 领域 skill（按 DataWorks 控制台模块分布，git 追踪的源）
     ├── install/                  # 安装：装/升/验证 CLI、配凭证、环境变量
     │   ├── SKILL.md
@@ -24,7 +31,8 @@ aliyun-skill/
     ├── etl-migration/            # 新旧 ETL SQL 迁移（Hive→ODPS，命名/任务头/分区规范）
     │   ├── SKILL.md
     │   └── references/dev-standards.md
-    ├── data-integration/         # 数据集成：数据源、同步任务（占位）
+    ├── etl-dev-run/              # 本地 ETL 提交 DEV 试跑（关键字：etl试跑）
+    ├── data-integration/         # 数据集成：DIJob 查询/运维、报警规则、脚本集
     ├── operation-center/         # 运维中心：实例、补数据、监控（占位）
     ├── deploy/                   # 发布：部署、上下线（占位）
     └── datamap/                  # 数据地图：元数据、血缘（占位）

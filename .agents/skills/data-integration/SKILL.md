@@ -47,16 +47,23 @@ DataWorks 数据集成（Data Integration / DI）。核心对象是**数据集�
 
 - `ListDataSources` / `GetDataSource` 需 `AliyunDataWorksFullAccess`，当前账号 **403030 无权限**，无法直接查数据源连接地址。
 
-## 脚本：DI求ODS_表.sh
+## 脚本集：di_scripts/
 
-**用途**：遍历项目全部数据集成任务，汇总其产出的所有 `ods_*` 目标表清单（Markdown）。
+**位置**：`di_scripts/`（见 `di_scripts/README.md`）。全部为只读排查脚本，默认项目 `bdprd`（672230）。
 
-**位置**：项目根目录 `DI求ODS_表.sh`
+| 脚本 | 用途 | 输出 |
+|------|------|------|
+| `DI失败清单.sh` | 指定业务日的 DI 失败实例：错误分类 + 告警 + 任务配置 | `../di_fail_reports/DI任务实例失败清单_<bizdate>.md` |
+| `DI排查清单.sh` | 全量 DI 任务 → 逐任务 CSV（源库表/去向/过滤条件） | CSV |
+| `DI表清单.sh` | 任务→表映射：来源库表 → 去向 schema/表 | Markdown |
+| `DI求ODS_表.sh` | 只筛 `ods_*` 目标表，按 schema 去重汇总 | Markdown |
 
-**原理**：`ListDIJobs`（自动翻页取全部任务）→ 逐个 `ListDIJobRunDetails` 取目标 schema/表 → 过滤 `ods_*` 前缀 → 去重按 schema 分组输出。
+**DI求ODS_表.sh 原理**：`ListDIJobs`（自动翻页取全部任务）→ 逐个 `ListDIJobRunDetails` 取目标 schema/表 → 过滤 `ods_*` 前缀 → 去重按 schema 分组输出。
 
 **用法**：
 ```bash
+cd di_scripts
+./DI失败清单.sh -b 2026-10-12    # 失败清单（默认昨天），写 ../di_fail_reports/
 ./DI求ODS_表.sh                 # 输出到 stdout
 ./DI求ODS_表.sh -o ods_all.md   # 写入 Markdown 文件
 ./DI求ODS_表.sh -p 672230 -o ods_all.md   # 指定项目
@@ -65,6 +72,7 @@ DataWorks 数据集成（Data Integration / DI）。核心对象是**数据集�
 **注意**：
 - 结果来自**数据集成任务的目标表**，反映「数据集成产出的 ODS 表」，不代表 MaxCompute 全部 ods_* 表。
 - 表数会随任务表映射动态变化，以实时查询为准。
+- 三个表清单类脚本（DI排查/DI表/DI求ODS）数据源高度重叠，合并需谨慎。
 
 ## 权限要求
 
